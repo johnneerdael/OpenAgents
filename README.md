@@ -7,7 +7,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/darrenhinde/opencode-agents?style=social)](https://github.com/darrenhinde/opencode-agents/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub last commit](https://img.shields.io/github/last-commit/darrenhinde/opencode-agents)](https://github.com/darrenhinde/opencode-agents/commits/main)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](docs/contributing/CONTRIBUTING.md)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow.svg?style=flat&logo=buy-me-a-coffee)](https://buymeacoffee.com/darrenhinde)
 
 **Multi-language support:** TypeScript • Python • Go • Rust  
@@ -18,6 +18,9 @@
 [![Watch Demo](https://img.youtube.com/vi/EOIzFMdmox8/maxresdefault.jpg)](https://youtu.be/EOIzFMdmox8?si=4ZSsVlAkhMxVmF2R)
 
 > **Note:** This repository has evolved since the demo video with continuous improvements to make it easier for others to use in their projects. The core concepts remain the same, but installation and component organization have been streamlined.
+
+> 📹 **Following along with the video?** The simplified structure shown in the tutorial is available on the [`video-simple`](https://github.com/darrenhinde/opencode-agents/tree/video-simple) branch.
+
 
 ## Why Use This?
 
@@ -33,34 +36,101 @@
 
 ### Step 1: Install OpenCode CLI
 ```bash
-# Follow official guide
-https://opencode.ai/docs
-```
 
+https://opencode.ai/docs# Follow official guide
+```
 ### Step 2: Install Agents & Commands
 
 **Option A: Interactive Installer (Recommended)**
+
+<details open>
+<summary><b>macOS / Linux</b></summary>
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh | bash
 ```
+</details>
+
+<details>
+<summary><b>Windows</b></summary>
+
+**Using Git Bash (Recommended):**
+```bash
+curl -fsSL https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh | bash
+```
+
+**Using PowerShell:**
+```powershell
+# Download the script
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh" -OutFile "install.sh"
+
+# Run with Git Bash
+& "C:\Program Files\Git\bin\bash.exe" install.sh
+
+# Or run with WSL
+wsl bash install.sh
+```
+
+**Using WSL:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh | bash
+```
+
+> **Note:** Git Bash comes with Git for Windows. [Download here](https://git-scm.com/download/win)
+</details>
 
 The installer offers:
 - 🎯 **Quick Profiles**: Core, Developer, Full, or Advanced
 - 🎨 **Custom Selection**: Pick exactly what you need
 - 📦 **Smart Dependencies**: Auto-installs required components
 - ✨ **Interactive Menus**: User-friendly component browser
+- 🛡️ **Collision Detection**: Safely handles existing files with 4 strategies (skip/overwrite/backup/cancel)
+- 🖥️ **Cross-Platform**: Works on macOS, Linux, and Windows (Git Bash/WSL)
+
+> **Updating?** The installer detects existing files and lets you choose: skip existing (keep your changes), overwrite all (get latest), or backup & overwrite (safe update). [Learn more](docs/getting-started/collision-handling.md)
 
 **Option B: Profile-Based Install**
+
+<details open>
+<summary><b>macOS / Linux / Git Bash / WSL</b></summary>
+
 ```bash
-# Core essentials only
+# Core essentials only (15 components)
 curl -fsSL https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh | bash -s core
 
-# Balanced for daily development
+# Balanced for daily development (22 components)
 curl -fsSL https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh | bash -s developer
 
-# Everything included
+# Everything included (24 components)
 curl -fsSL https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh | bash -s full
+
+# Advanced + System Builder (29 components)
+curl -fsSL https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh | bash -s advanced
 ```
+</details>
+
+<details>
+<summary><b>Windows PowerShell</b></summary>
+
+```powershell
+# Download script
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh" -OutFile "install.sh"
+
+# Core profile
+& "C:\Program Files\Git\bin\bash.exe" install.sh core
+
+# Developer profile
+& "C:\Program Files\Git\bin\bash.exe" install.sh developer
+
+# Full profile
+& "C:\Program Files\Git\bin\bash.exe" install.sh full
+
+# Advanced profile
+& "C:\Program Files\Git\bin\bash.exe" install.sh advanced
+```
+</details>
+
+> **New!** The `advanced` profile includes the **System Builder** - an interactive tool that generates complete custom AI systems tailored to your domain. [Learn more](docs/features/system-builder/)
 
 **Option C: Manual Install**
 ```bash
@@ -195,6 +265,48 @@ nano ~/.opencode/context/project/project-context.md
 
 ---
 
+## 🏗️ System Builder (New!)
+
+**Build complete custom AI systems tailored to your domain in minutes.**
+
+The System Builder is an interactive tool that generates complete `.opencode` architectures customized to your needs.
+
+### Quick Start
+```bash
+# Install advanced profile (includes system builder)
+curl -fsSL https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh | bash -s advanced
+
+# Run the interactive builder
+/build-context-system
+```
+
+### What It Does
+- 🎯 **Interactive Interview** - Asks about your domain, use cases, and requirements
+- 🤖 **Generates Complete System** - Creates orchestrator, subagents, context files, workflows, and commands
+- 🔗 **Integrates with Existing** - Detects and reuses your existing agents
+- 🛡️ **Safe Merging** - Won't overwrite your work, offers merge strategies
+- 📚 **Production-Ready** - Includes documentation, testing guides, and examples
+
+### Example
+```bash
+$ /build-context-system
+
+Domain: E-commerce Operations
+Purpose: Automate order processing and customer support
+
+# After answering questions, generates:
+# - ecommerce-orchestrator (main agent)
+# - order-processor, ticket-router, report-generator (subagents)
+# - 12 context files (domain knowledge, processes, standards)
+# - 5 workflows (process-order, route-ticket, etc.)
+# - 5 custom commands (/process-order, /route-ticket, etc.)
+# - Complete documentation
+```
+
+**Learn more:** [System Builder Documentation](docs/features/system-builder/)
+
+---
+
 ## Optional Add-ons
 
 ### 📱 Telegram Notifications
@@ -244,6 +356,12 @@ cp env.example .env
 **Q: What's the main way to use this?**  
 A: Use `opencode --agent codebase-agent` for development. It coordinates everything else.
 
+**Q: Does this work on Windows?**  
+A: Yes! Use Git Bash (recommended) or WSL. See [Platform Compatibility Guide](docs/getting-started/platform-compatibility.md) for details.
+
+**Q: What bash version do I need?**  
+A: Bash 3.2+ (works on macOS default bash). Run `bash scripts/tests/test-compatibility.sh` to check your system.
+
 **Q: Do I need to install plugins/tools?**  
 A: No, they're optional. Only install if you want Telegram notifications or Gemini AI features.
 
@@ -256,8 +374,8 @@ A: Edit `~/.opencode/context/project/project-context.md` - agents automatically 
 **Q: What languages are supported?**  
 A: The agents work with any language (TypeScript, Python, Go, Rust, etc.) and adapt based on your project files.
 
-**Q: What's the AGENT-SYSTEM-BLUEPRINT.md for?**  
-A: It's a teaching document explaining architecture patterns and how to extend the system.
+**Q: What's the Agent System Blueprint for?**  
+A: It's a teaching document explaining architecture patterns and how to extend the system. See [docs/features/agent-system-blueprint.md](docs/features/agent-system-blueprint.md)
 
 **Q: Can I use just one command or agent?**  
 A: Yes! Use the installer's list feature to see all components:
@@ -301,10 +419,14 @@ Complete installation with all available components.
 - **Best for**: Power users, exploring all features
 
 ### 🚀 Advanced
-Full installation plus experimental features and planning docs.
+Full installation plus **System Builder** and experimental features.
 - Everything in Full, plus:
+- **System Builder**: Interactive AI system generator (7 components)
+  - system-builder agent
+  - domain-analyzer, agent-generator, context-organizer, workflow-designer, command-creator subagents
+  - build-context-system command
 - **Additional**: .Building/ directory, GitHub workflows
-- **Best for**: Contributors, learning the architecture
+- **Best for**: Building custom AI systems, contributors, learning the architecture
 
 ## Updating Components
 
@@ -323,7 +445,7 @@ curl -fsSL https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/in
 ## Advanced
 
 ### Understanding the System
-Read [AGENT-SYSTEM-BLUEPRINT.md](.opencode/AGENT-SYSTEM-BLUEPRINT.md) to learn:
+Read [Agent System Blueprint](docs/features/agent-system-blueprint.md) to learn:
 - How context loading works (the `@` symbol)
 - Agent architecture patterns
 - How to create custom agents and commands
@@ -356,10 +478,14 @@ Read [AGENT-SYSTEM-BLUEPRINT.md](.opencode/AGENT-SYSTEM-BLUEPRINT.md) to learn:
 
 ## Contributing
 
+We welcome contributions! Please see our [Contributing Guide](docs/contributing/CONTRIBUTING.md) for details.
+
 1. Follow the established naming conventions and coding standards
 2. Write comprehensive tests for new features
 3. Update documentation for any changes
 4. Ensure security best practices are followed
+
+See also: [Code of Conduct](docs/contributing/CODE_OF_CONDUCT.md)
 
 ---
 

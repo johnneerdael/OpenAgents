@@ -3,19 +3,45 @@
 #############################################################################
 # OpenCode Agents Installer
 # Interactive installer for OpenCode agents, commands, tools, and plugins
+#
+# Compatible with:
+# - macOS (bash 3.2+)
+# - Linux (bash 3.2+)
+# - Windows (Git Bash, WSL)
 #############################################################################
 
 set -e
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-MAGENTA='\033[0;35m'
-CYAN='\033[0;36m'
-BOLD='\033[1m'
-NC='\033[0m' # No Color
+# Detect platform
+PLATFORM="$(uname -s)"
+case "$PLATFORM" in
+    Linux*)     PLATFORM="Linux";;
+    Darwin*)    PLATFORM="macOS";;
+    CYGWIN*|MINGW*|MSYS*) PLATFORM="Windows";;
+    *)          PLATFORM="Unknown";;
+esac
+
+# Colors for output (disable on Windows if not supported)
+if [ "$PLATFORM" = "Windows" ] && [ -z "$WT_SESSION" ] && [ -z "$ConEmuPID" ]; then
+    # Basic Windows terminal without color support
+    RED=''
+    GREEN=''
+    YELLOW=''
+    BLUE=''
+    MAGENTA=''
+    CYAN=''
+    BOLD=''
+    NC=''
+else
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    YELLOW='\033[1;33m'
+    BLUE='\033[0;34m'
+    MAGENTA='\033[0;35m'
+    CYAN='\033[0;36m'
+    BOLD='\033[1m'
+    NC='\033[0m' # No Color
+fi
 
 # Configuration
 REPO_URL="https://github.com/darrenhinde/opencode-agents"
@@ -68,6 +94,21 @@ print_step() {
 # Dependency Checks
 #############################################################################
 
+check_bash_version() {
+    # Check bash version (need 3.2+)
+    local bash_version="${BASH_VERSION%%.*}"
+    if [ "$bash_version" -lt 3 ]; then
+        echo "Error: This script requires Bash 3.2 or higher"
+        echo "Current version: $BASH_VERSION"
+        echo ""
+        echo "Please upgrade bash or use a different shell:"
+        echo "  macOS:   brew install bash"
+        echo "  Linux:   Use your package manager to update bash"
+        echo "  Windows: Use Git Bash or WSL"
+        exit 1
+    fi
+}
+
 check_dependencies() {
     print_step "Checking dependencies..."
     
@@ -85,9 +126,24 @@ check_dependencies() {
         print_error "Missing required dependencies: ${missing_deps[*]}"
         echo ""
         echo "Please install them:"
-        echo "  macOS:   brew install ${missing_deps[*]}"
-        echo "  Ubuntu:  sudo apt-get install ${missing_deps[*]}"
-        echo "  Fedora:  sudo dnf install ${missing_deps[*]}"
+        case "$PLATFORM" in
+            macOS)
+                echo "  brew install ${missing_deps[*]}"
+                ;;
+            Linux)
+                echo "  Ubuntu/Debian: sudo apt-get install ${missing_deps[*]}"
+                echo "  Fedora/RHEL:   sudo dnf install ${missing_deps[*]}"
+                echo "  Arch:          sudo pacman -S ${missing_deps[*]}"
+                ;;
+            Windows)
+                echo "  Git Bash: Install via https://git-scm.com/"
+                echo "  WSL:      sudo apt-get install ${missing_deps[*]}"
+                echo "  Scoop:    scoop install ${missing_deps[*]}"
+                ;;
+            *)
+                echo "  Use your package manager to install: ${missing_deps[*]}"
+                ;;
+        esac
         exit 1
     fi
     
@@ -219,8 +275,13 @@ show_profile_menu() {
         *) print_error "Invalid choice"; sleep 2; show_profile_menu; return ;;
     esac
     
-    # Load profile components
-    mapfile -t SELECTED_COMPONENTS < <(get_profile_components "$PROFILE")
+    # Load profile components (compatible with bash 3.2+)
+    SELECTED_COMPONENTS=()
+    local temp_file="$TEMP_DIR/components.tmp"
+    get_profile_components "$PROFILE" > "$temp_file"
+    while IFS= read -r component; do
+        [ -n "$component" ] && SELECTED_COMPONENTS+=("$component")
+    done < "$temp_file"
     
     show_installation_preview
 }
@@ -407,31 +468,155 @@ show_installation_preview() {
 }
 
 #############################################################################
+# Collision Detection
+#############################################################################
+
+show_collision_report() {
+    local collision_count=$1
+    shift
+    local collisions=("$@")
+    
+    echo ""
+    print_warning "Found ${collision_count} file collision(s):"
+    echo ""
+    
+    # Group by type
+    local agents=()
+    local subagents=()
+    local commands=()
+    local tools=()
+    local plugins=()
+    local contexts=()
+    local configs=()
+    
+    for file in "${collisions[@]}"; do
+        # Skip empty entries
+        [ -z "$file" ] && continue
+        
+        if [[ $file == *"/agent/subagents/"* ]]; then
+            subagents+=("$file")
+        elif [[ $file == *"/agent/"* ]]; then
+            agents+=("$file")
+        elif [[ $file == *"/command/"* ]]; then
+            commands+=("$file")
+        elif [[ $file == *"/tool/"* ]]; then
+            tools+=("$file")
+        elif [[ $file == *"/plugin/"* ]]; then
+            plugins+=("$file")
+        elif [[ $file == *"/context/"* ]]; then
+            contexts+=("$file")
+        else
+            configs+=("$file")
+        fi
+    done
+    
+    # Display grouped collisions
+    [ ${#agents[@]} -gt 0 ] && echo -e "${YELLOW}  Agents (${#agents[@]}):${NC}" && printf '    %s\n' "${agents[@]}"
+    [ ${#subagents[@]} -gt 0 ] && echo -e "${YELLOW}  Subagents (${#subagents[@]}):${NC}" && printf '    %s\n' "${subagents[@]}"
+    [ ${#commands[@]} -gt 0 ] && echo -e "${YELLOW}  Commands (${#commands[@]}):${NC}" && printf '    %s\n' "${commands[@]}"
+    [ ${#tools[@]} -gt 0 ] && echo -e "${YELLOW}  Tools (${#tools[@]}):${NC}" && printf '    %s\n' "${tools[@]}"
+    [ ${#plugins[@]} -gt 0 ] && echo -e "${YELLOW}  Plugins (${#plugins[@]}):${NC}" && printf '    %s\n' "${plugins[@]}"
+    [ ${#contexts[@]} -gt 0 ] && echo -e "${YELLOW}  Context (${#contexts[@]}):${NC}" && printf '    %s\n' "${contexts[@]}"
+    [ ${#configs[@]} -gt 0 ] && echo -e "${YELLOW}  Config (${#configs[@]}):${NC}" && printf '    %s\n' "${configs[@]}"
+    
+    echo ""
+}
+
+get_install_strategy() {
+    echo -e "${BOLD}How would you like to proceed?${NC}\n"
+    echo "  1) ${GREEN}Skip existing${NC} - Only install new files, keep all existing files unchanged"
+    echo "  2) ${YELLOW}Overwrite all${NC} - Replace existing files with new versions (your changes will be lost)"
+    echo "  3) ${CYAN}Backup & overwrite${NC} - Backup existing files, then install new versions"
+    echo "  4) ${RED}Cancel${NC} - Exit without making changes"
+    echo ""
+    read -p "Enter your choice [1-4]: " strategy_choice
+    
+    case $strategy_choice in
+        1) echo "skip" ;;
+        2) 
+            echo ""
+            print_warning "This will overwrite existing files. Your changes will be lost!"
+            read -p "Are you sure? Type 'yes' to confirm: " confirm
+            if [ "$confirm" = "yes" ]; then
+                echo "overwrite"
+            else
+                echo "cancel"
+            fi
+            ;;
+        3) echo "backup" ;;
+        4) echo "cancel" ;;
+        *) echo "cancel" ;;
+    esac
+}
+
+#############################################################################
 # Installation
 #############################################################################
 
 perform_installation() {
-    print_step "Installing components..."
+    print_step "Preparing installation..."
     
-    # Check if .opencode already exists
-    if [ -d "$INSTALL_DIR" ]; then
-        print_warning "$INSTALL_DIR directory already exists"
-        read -p "Backup and continue? [Y/n]: " backup_confirm
+    # Create directory structure if it doesn't exist
+    mkdir -p "$INSTALL_DIR"/{agent/subagents,command,tool,plugin,context/{core,project}}
+    
+    # Check for collisions
+    local collisions=()
+    for comp in "${SELECTED_COMPONENTS[@]}"; do
+        local type="${comp%%:*}"
+        local id="${comp##*:}"
+        local path=$(jq -r ".components.${type}s[] | select(.id == \"${id}\") | .path" "$TEMP_DIR/registry.json")
         
-        if [[ ! $backup_confirm =~ ^[Nn] ]]; then
+        if [ -n "$path" ] && [ "$path" != "null" ] && [ -f "$path" ]; then
+            collisions+=("$path")
+        fi
+    done
+    
+    # Determine installation strategy
+    local install_strategy="fresh"
+    
+    if [ ${#collisions[@]} -gt 0 ]; then
+        show_collision_report ${#collisions[@]} "${collisions[@]}"
+        install_strategy=$(get_install_strategy)
+        
+        if [ "$install_strategy" = "cancel" ]; then
+            print_info "Installation cancelled by user"
+            cleanup_and_exit 0
+        fi
+        
+        # Handle backup strategy
+        if [ "$install_strategy" = "backup" ]; then
             local backup_dir="${INSTALL_DIR}.backup.$(date +%Y%m%d-%H%M%S)"
-            mv "$INSTALL_DIR" "$backup_dir"
-            print_success "Backed up to $backup_dir"
-        else
-            print_error "Installation cancelled"
-            cleanup_and_exit 1
+            print_step "Creating backup..."
+            
+            # Only backup files that will be overwritten
+            local backup_count=0
+            for file in "${collisions[@]}"; do
+                if [ -f "$file" ]; then
+                    local backup_file="${backup_dir}/${file}"
+                    mkdir -p "$(dirname "$backup_file")"
+                    if cp "$file" "$backup_file" 2>/dev/null; then
+                        ((backup_count++))
+                    else
+                        print_warning "Failed to backup: $file"
+                    fi
+                fi
+            done
+            
+            if [ $backup_count -gt 0 ]; then
+                print_success "Backed up ${backup_count} file(s) to $backup_dir"
+                install_strategy="overwrite"  # Now we can overwrite
+            else
+                print_error "Backup failed. Installation cancelled."
+                cleanup_and_exit 1
+            fi
         fi
     fi
     
-    # Create directory structure
-    mkdir -p "$INSTALL_DIR"/{agent/subagents,command,tool,plugin,context/{core,project}}
+    # Perform installation
+    print_step "Installing components..."
     
     local installed=0
+    local skipped=0
     local failed=0
     
     for comp in "${SELECTED_COMPONENTS[@]}"; do
@@ -447,6 +632,19 @@ perform_installation() {
             continue
         fi
         
+        # Check if file exists before we install (for proper messaging)
+        local file_existed=false
+        if [ -f "$path" ]; then
+            file_existed=true
+        fi
+        
+        # Check if file exists and we're in skip mode
+        if [ "$file_existed" = true ] && [ "$install_strategy" = "skip" ]; then
+            print_info "Skipped existing: ${type}:${id}"
+            ((skipped++))
+            continue
+        fi
+        
         # Download component
         local url="${RAW_URL}/${path}"
         local dest="${path}"
@@ -455,7 +653,12 @@ perform_installation() {
         mkdir -p "$(dirname "$dest")"
         
         if curl -fsSL "$url" -o "$dest"; then
-            print_success "Installed ${type}: ${id}"
+            # Show appropriate message based on whether file existed before
+            if [ "$file_existed" = true ]; then
+                print_success "Updated ${type}: ${id}"
+            else
+                print_success "Installed ${type}: ${id}"
+            fi
             ((installed++))
         else
             print_error "Failed to install ${type}: ${id}"
@@ -479,6 +682,7 @@ perform_installation() {
     echo ""
     print_success "Installation complete!"
     echo -e "  Installed: ${GREEN}${installed}${NC}"
+    [ $skipped -gt 0 ] && echo -e "  Skipped: ${CYAN}${skipped}${NC}"
     [ $failed -gt 0 ] && echo -e "  Failed: ${RED}${failed}${NC}"
     
     show_post_install
@@ -498,6 +702,10 @@ show_post_install() {
     echo "3. Start using OpenCode agents:"
     echo "   ${CYAN}opencode${NC}"
     echo ""
+    
+    if [ -d "${INSTALL_DIR}.backup."* ] 2>/dev/null; then
+        print_info "Backup created - you can restore files from .opencode.backup.* if needed"
+    fi
     
     print_info "Documentation: ${REPO_URL}"
     echo ""
@@ -552,51 +760,62 @@ trap 'cleanup_and_exit 1' INT TERM
 main() {
     # Parse command line arguments
     case "${1:-}" in
-        --core)
+        core|--core)
             INSTALL_MODE="profile"
             PROFILE="core"
             ;;
-        --developer)
+        developer|--developer)
             INSTALL_MODE="profile"
             PROFILE="developer"
             ;;
-        --full)
+        full|--full)
             INSTALL_MODE="profile"
             PROFILE="full"
             ;;
-        --advanced)
+        advanced|--advanced)
             INSTALL_MODE="profile"
             PROFILE="advanced"
             ;;
-        --list)
+        list|--list)
             check_dependencies
             fetch_registry
             list_components
             cleanup_and_exit 0
             ;;
-        --help|-h)
+        --help|-h|help)
             print_header
             echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Options:"
-            echo "  --core        Install core profile"
-            echo "  --developer   Install developer profile"
-            echo "  --full        Install full profile"
-            echo "  --advanced    Install advanced profile"
-            echo "  --list        List all available components"
-            echo "  --help        Show this help message"
+            echo "  core, --core           Install core profile"
+            echo "  developer, --developer Install developer profile"
+            echo "  full, --full           Install full profile"
+            echo "  advanced, --advanced   Install advanced profile"
+            echo "  list, --list           List all available components"
+            echo "  help, --help, -h       Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  $0 core"
+            echo "  $0 --developer"
+            echo "  curl -fsSL https://raw.githubusercontent.com/darrenhinde/opencode-agents/main/install.sh | bash -s core"
             echo ""
             echo "Without options, runs in interactive mode"
             exit 0
             ;;
     esac
     
+    check_bash_version
     check_dependencies
     fetch_registry
     
     if [ -n "$PROFILE" ]; then
-        # Non-interactive mode
-        mapfile -t SELECTED_COMPONENTS < <(get_profile_components "$PROFILE")
+        # Non-interactive mode (compatible with bash 3.2+)
+        SELECTED_COMPONENTS=()
+        local temp_file="$TEMP_DIR/components.tmp"
+        get_profile_components "$PROFILE" > "$temp_file"
+        while IFS= read -r component; do
+            [ -n "$component" ] && SELECTED_COMPONENTS+=("$component")
+        done < "$temp_file"
         show_installation_preview
     else
         # Interactive mode
