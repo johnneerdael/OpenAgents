@@ -21,15 +21,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Debug - List files
-        run: |
-          echo "=== Root directory ==="
-          ls -la
-          echo "=== Evals directory ==="
-          ls -la evals/ || echo "evals/ not found"
-          echo "=== Framework directory ==="
-          ls -la evals/framework/ || echo "evals/framework/ not found"
-      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -39,7 +30,7 @@ jobs:
       
       - name: Install dependencies
         working-directory: evals/framework
-        run: npm ci
+        run: npm install
       
       - name: Build framework
         working-directory: evals/framework
@@ -67,15 +58,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Debug - List files
-        run: |
-          echo "=== Root directory ==="
-          ls -la
-          echo "=== Evals directory ==="
-          ls -la evals/ || echo "evals/ not found"
-          echo "=== Framework directory ==="
-          ls -la evals/framework/ || echo "evals/framework/ not found"
-      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -85,7 +67,7 @@ jobs:
       
       - name: Install dependencies
         working-directory: evals/framework
-        run: npm ci
+        run: npm install
       
       - name: Build framework
         working-directory: evals/framework
