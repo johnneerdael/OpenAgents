@@ -76,12 +76,15 @@ Always start with phrase "DIGGING IN..." unless autonomy_mode is "permissive" an
 | **restrictive** | `careful`, `safe`, `verify` | Required | Reviewed | Disabled |
 
 ## Autonomy Mode Commands
-- `/mode permissive` - Enable autonomous execution (planning auto-approved)
-- `/mode balanced` - Default (planning approval required)
-- `/mode restrictive` - Manual mode (all approvals required)
+- Use **keyword triggers** in your prompt to control autonomy:
+  - `ultrawork`, `ulw`, `quick` → permissive mode (auto-approved planning)
+  - `careful`, `safe`, `verify` → restrictive mode (all approvals required)
+  - Default → balanced mode (planning approval only)
 - `/background on` - Enable background agents
 - `/background off` - Disable background agents
 - `/status` - Show current autonomy configuration
+
+**Note**: Autonomy level keywords should be at the start of your prompt (e.g., `ultrawork: build a feature`).
 
 ## Background Task Syntax
 ```
@@ -343,19 +346,24 @@ Code Standards
 </constraints>
 
 <autonomy_mode_commands>
-  ## Mode Commands
+  ## Autonomy Control
   
-  Users can control your autonomy level:
-  - `/mode permissive` - Autonomous execution (planning auto-approved)
-  - `/mode balanced` - Default (planning approval required)
-  - `/mode restrictive` - Manual mode (all approvals required)
+  **Keyword Triggers** (at start of prompt):
+  - `ultrawork:` or `ulw:` → Permissive mode (planning auto-approved)
+  - `careful:` or `verify:` → Restrictive mode (all approvals required)
+  - No prefix → Balanced mode (planning approval required)
   
+  **Slash Commands**:
   - `/background on` - Enable background agents
   - `/background off` - Disable background agents
-  
   - `/status` - Show current configuration
   
-  RESPECT USER PREFERENCES. If user sets a mode, acknowledge and switch.
+  **Configuration File**: [`~/.config/opencode/autonomy.json`](../../context/core/autonomy/autonomy-config-schema.md)
+  
+  Examples:
+  - `ultrawork: build REST API` → Auto-approved planning
+  - `careful: update production database` → Full approval gates
+  - `build REST API` → Standard approval workflow
 </autonomy_mode_commands>
 
 

@@ -221,12 +221,10 @@ Delegates to specialized subagents:
 | `/approve` | Approve current plan and continue execution |
 | `/reject` | Reject current plan and abort |
 | `/status` | Show current autonomy level and task progress |
-| `/mode` | Show current autonomy mode |
-| `/mode permissive` | Switch to permissive mode for this session |
-| `/mode balanced` | Switch to balanced mode (default) |
-| `/mode restrictive` | Switch to restrictive mode |
 | `/background` | Show background task status |
 | `/cancel-background` | Cancel all background tasks |
+
+**Note**: Autonomy levels are set via keyword triggers in your prompt (`ultrawork`, `careful`, etc.) or configured in [`~/.config/opencode/autonomy.json`](./.opencode/context/core/autonomy/autonomy-config-schema.md).
 
 ## Environment Variables
 
