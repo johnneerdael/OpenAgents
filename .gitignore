@@ -204,3 +204,6 @@ evals/results/*
 
 # User-generated task files
 tasks/
+
+# Autonomy Control Plugin state files
+.opencode/state/autonomy/

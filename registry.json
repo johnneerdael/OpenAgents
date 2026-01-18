@@ -774,6 +774,97 @@
         ],
         "dependencies": [],
         "category": "specialized"
+      },
+      {
+        "id": "autonomy-control",
+        "name": "Autonomy Control Plugin",
+        "type": "plugin",
+        "path": ".opencode/plugin/autonomy-control.ts",
+        "description": "Session-scoped autonomy mode management with permission enforcement, keyword triggers, and background task tracking",
+        "aliases": ["autonomy"],
+        "tags": [
+          "autonomy",
+          "permissions",
+          "control",
+          "sessions"
+        ],
+        "dependencies": [],
+        "metadata": {
+          "version": "1.0.0",
+          "features": [
+            "autonomy_control tool (set/get/status)",
+            "Permission enforcement per mode",
+            "Keyword triggers (ultrawork, careful, etc.)",
+            "Background task management",
+            "Adaptive LLM parameters"
+          ],
+          "hooks": ["event", "config", "tool", "permission.ask", "chat.message", "chat.params", "tool.execute.before", "tool.execute.after"],
+          "requiredFiles": [
+            ".opencode/plugin/autonomy-control.ts",
+            ".opencode/plugin/types/autonomy.ts",
+            ".opencode/plugin/utils/config.ts",
+            ".opencode/plugin/utils/formatting.ts",
+            ".opencode/plugin/utils/risk-detection.ts"
+          ]
+        },
+        "category": "standard"
+      },
+      {
+        "id": "autonomy-types",
+        "name": "Autonomy Type Definitions",
+        "type": "plugin",
+        "path": ".opencode/plugin/types/autonomy.ts",
+        "description": "TypeScript type definitions for autonomy control system",
+        "tags": [
+          "autonomy",
+          "types",
+          "typescript"
+        ],
+        "dependencies": [],
+        "category": "standard"
+      },
+      {
+        "id": "autonomy-config",
+        "name": "Autonomy Configuration Utilities",
+        "type": "plugin",
+        "path": ".opencode/plugin/utils/config.ts",
+        "description": "Configuration loading and default value management",
+        "tags": [
+          "autonomy",
+          "config",
+          "utilities"
+        ],
+        "dependencies": ["plugin:autonomy-types"],
+        "category": "standard"
+      },
+      {
+        "id": "autonomy-formatting",
+        "name": "Autonomy Response Formatting",
+        "type": "plugin",
+        "path": ".opencode/plugin/utils/formatting.ts",
+        "description": "Format tool responses for set/get/status actions",
+        "tags": [
+          "autonomy",
+          "formatting",
+          "utilities"
+        ],
+        "dependencies": ["plugin:autonomy-types"],
+        "category": "standard"
+      },
+      {
+        "id": "autonomy-risk-detection",
+        "name": "Tool Risk Detection",
+        "type": "plugin",
+        "path": ".opencode/plugin/utils/risk-detection.ts",
+        "description": "Classify tools by risk level and detect destructive commands",
+        "tags": [
+          "autonomy",
+          "risk",
+          "security",
+          "utilities"
+        ],
+        "dependencies": [],
+        "category": "standard"
       }
     ],
     "skills": [
@@ -2645,6 +2736,7 @@
         "command:optimize",
         "command:validate-repo",
         "tool:env",
+        "plugin:autonomy-control",
         "context:essential-patterns",
         "context:project-context",
         "context:quick-start",
@@ -2723,6 +2815,7 @@
         "plugin:notify",
         "plugin:telegram-bot",
         "plugin:telegram-notify",
+        "plugin:autonomy-control",
         "context:essential-patterns",
         "context:project-context",
         "context:quick-start",
@@ -2779,6 +2872,7 @@
         "plugin:notify",
         "plugin:telegram-bot",
         "plugin:telegram-notify",
+        "plugin:autonomy-control",
         "context:essential-patterns",
         "context:project-context",
         "context:quick-start",

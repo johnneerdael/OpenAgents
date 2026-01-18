@@ -1,0 +1,6 @@
+{
+  "plugin": [
+    "file://./.opencode/plugin/autonomy-control.ts"
+  ],
+  "$schema": "https://opencode.ai/config.json"
+}
