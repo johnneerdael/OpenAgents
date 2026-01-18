@@ -1041,9 +1041,8 @@ perform_installation() {
     local component_models=()
     if [ "$NON_INTERACTIVE" != true ]; then
         echo -e "${BOLD}Model Selection (Optional)${NC}"
-        echo "You can specify a preferred model for each agent/subagent."
-        echo "Example: openai/gpt-4o, anthropic/claude-3-5-sonnet, etc."
-        echo "Leave blank to use the default model."
+        echo "Choose optimal AI models for each agent based on research-backed recommendations."
+        echo "Press Enter to use the recommended balanced default, or specify a custom model."
         echo ""
         
         for comp in "${SELECTED_COMPONENTS[@]}"; do
@@ -1060,11 +1059,82 @@ perform_installation() {
                 
                 echo -e "${CYAN}${BOLD}${name}${NC} (${id})"
                 echo -e "   Role: ${desc}"
-                read -p "   Specify model for this agent: " selected_model
+                
+                # Define model recommendations based on agent ID
+                local premium_model="" balanced_model="" budget_model=""
+                case "$id" in
+                    openagent)
+                        premium_model="claude-opus-4.5 (Best reasoning & orchestration)"
+                        balanced_model="gpt-5.2 (Strong all-around, default)"
+                        budget_model="gemini-3-pro (Fast, large context)"
+                        ;;
+                    opencoder)
+                        premium_model="claude-opus-4.5 (80.9% SWE-Bench, efficient)"
+                        balanced_model="gpt-5.2 (Solid coding, default)"
+                        budget_model="qwen-2.5-coder-32b (GPT-4 level, open-source)"
+                        ;;
+                    contextscout)
+                        premium_model="gemini-3-pro (1M+ context window)"
+                        balanced_model="claude-opus-4.5 (Deep understanding, default)"
+                        budget_model="qwen-3-235b (Multilingual, cost-effective)"
+                        ;;
+                    documentation)
+                        premium_model="claude-opus-4.5 (Best quality writing)"
+                        balanced_model="gpt-5.2 (Versatile writer, default)"
+                        budget_model="gemini-3-pro (Fast iteration)"
+                        ;;
+                    coder-agent)
+                        premium_model="claude-opus-4.5 (Best patterns)"
+                        balanced_model="qwen-2.5-coder-32b (Cost-effective, default)"
+                        budget_model="gemini-3-pro (Frontend focus)"
+                        ;;
+                    tester)
+                        premium_model="claude-opus-4.5 (Comprehensive coverage)"
+                        balanced_model="gpt-5.2-codex (Mathematical correctness, default)"
+                        budget_model="deepseek-r1 (Reasoning-based tests)"
+                        ;;
+                    reviewer)
+                        premium_model="claude-opus-4.5 (Quality champion)"
+                        balanced_model="gpt-5.2-codex (Security focus, default)"
+                        budget_model="deepseek-v3.2 (Cost-effective reviews)"
+                        ;;
+                    build-agent)
+                        premium_model="gpt-5.2 (Best DevOps)"
+                        balanced_model="claude-opus-4.5 (Complex builds, default)"
+                        budget_model="gemini-3-pro (Cloud integration)"
+                        ;;
+                    background-task-manager)
+                        premium_model="gpt-5.2 (Best orchestration)"
+                        balanced_model="gemini-3-pro (Large context, default)"
+                        budget_model="deepseek-v3.2 (Agentic workflows)"
+                        ;;
+                    task-classifier)
+                        premium_model="gpt-5.2 (Best reasoning)"
+                        balanced_model="gemini-3-flash (Speed champion, default)"
+                        budget_model="claude-sonnet-4.5 (Balanced accuracy)"
+                        ;;
+                    *)
+                        # Generic fallback for other agents/subagents
+                        premium_model="claude-opus-4.5 (Premium tier)"
+                        balanced_model="gpt-5.2 (Balanced tier, default)"
+                        budget_model="gemini-3-pro (Budget tier)"
+                        ;;
+                esac
+                
+                # Display recommendations if available
+                if [ -n "$premium_model" ]; then
+                    echo -e "   ${GREEN}💎 Premium:${NC} ${premium_model}"
+                    echo -e "   ${BLUE}⚖️  Balanced:${NC} ${balanced_model}"
+                    echo -e "   ${YELLOW}💰 Budget:${NC} ${budget_model}"
+                fi
+                
+                read -p "   Model (or press Enter for default): " selected_model
                 
                 if [ -n "$selected_model" ]; then
                     component_models+=("${comp}|${selected_model}")
-                    echo -e "   ${GREEN}Using model: ${selected_model}${NC}"
+                    echo -e "   ${GREEN}✓ Using: ${selected_model}${NC}"
+                else
+                    echo -e "   ${BLUE}✓ Using default (balanced tier)${NC}"
                 fi
                 echo ""
             fi

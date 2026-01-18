@@ -35,6 +35,32 @@
 
 ---
 
+## 🔀 What's Different in This Fork
+
+This fork enhances OpenAgents with advanced autonomy control features and intelligent model selection:
+
+### Autonomy Control System
+- **Runtime Mode Switching**: Change autonomy levels mid-conversation using `/mode-permissive`, `/mode-balanced`, `/mode-restrictive` slash commands
+- **Session-Scoped Overrides**: Autonomy settings persist within each session but don't affect global config
+- **Three Autonomy Levels**:
+  - **Permissive**: Maximum autonomy with background task support (ultrawork mode)
+  - **Balanced**: Planning approval required, autonomous execution (default)
+  - **Restrictive**: Explicit approval for all operations (careful mode)
+
+### Intelligent Model Selection
+- **Installation-Time Model Choice**: Select optimal AI models for each agent during installation
+- **Research-Backed Recommendations**: Curated model suggestions based on January 2026 benchmarks
+- **Cost-Performance Tiers**: Choose from premium (Claude Opus 4.5), balanced (GPT-5.2), or budget (DeepSeek, Qwen) options
+
+### Enhanced Tools
+- **Autonomy Control Tool**: Programmatic access to autonomy settings via `oh-my-opencode`
+- **Session State Manager**: Robust session management with comprehensive test coverage
+- **Background Task Integration**: Parallel task execution in permissive mode
+
+📖 **Full Documentation**: See [Autonomy User Manual](docs/guides/AUTONOMY_USER_MANUAL.md) for detailed usage guide
+
+---
+
 ## Quick Start
 
 ### Step 1: Install OpenCode CLI (Follow official guide)
@@ -177,6 +203,64 @@ opencode --agent openagent
 3. Executes step-by-step with validation
 4. Delegates to specialists (@task-manager, @tester, @reviewer) when needed
 5. Confirms completion and offers cleanup
+
+---
+
+## 🎯 Autonomy Control Quick Start
+
+### Basic Usage
+
+**Check Current Mode**:
+```
+/mode
+```
+
+**Switch Modes**:
+```
+/mode-permissive  # Maximum autonomy (ultrawork mode)
+/mode-balanced    # Default (planning approval required)
+/mode-restrictive # Manual control (careful mode)
+```
+
+### Example Workflows
+
+**Rapid Prototyping** (Permissive Mode):
+```
+/mode-permissive
+Create a REST API with user authentication
+```
+→ Agent works autonomously with background tasks, minimal approval gates
+
+**Production Changes** (Restrictive Mode):
+```
+/mode-restrictive
+Update the authentication system to use JWT tokens
+```
+→ Detailed planning, explicit approval for every step, no background tasks
+
+**Standard Development** (Balanced Mode):
+```
+/mode-balanced
+Add unit tests for the user service
+```
+→ Brief plan presentation, autonomous execution after approval
+
+### Model Selection
+
+During installation, choose models based on your needs:
+
+- **💎 Premium**: Claude Opus 4.5, GPT-5.2 - Best quality for critical applications
+- **⚖️ Balanced**: Gemini 3 Pro, GPT-5.2 - Strong performance, moderate cost
+- **💰 Budget**: DeepSeek-V3.2, Qwen 2.5 Coder - Cost-effective for high-volume tasks
+
+**Hybrid Strategy** (Recommended):
+- Complex architecture → Claude Opus 4.5
+- Standard development → GPT-5.2 or Gemini 3 Pro
+- Simple tasks/high volume → Qwen 2.5 Coder or DeepSeek-V3.2
+- Frontend/UI → Gemini 3 Pro (WebDev Arena leader)
+- Security review → GPT-5.2 Codex
+
+📚 **Detailed Guide**: [Autonomy User Manual](docs/guides/AUTONOMY_USER_MANUAL.md)
 
 ---
 
