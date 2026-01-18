@@ -36,7 +36,7 @@ Welcome to the OpenAgents documentation! This directory contains all documentati
 ### For Contributors
 - Read the [Contributing Guide](contributing/CONTRIBUTING.md)
 - Review the [Code of Conduct](contributing/CODE_OF_CONDUCT.md)
-- Check out [good first issues](https://github.com/darrenhinde/OpenAgents/labels/good%20first%20issue)
+- Check out [good first issues](https://github.com/johnneerdael/OpenAgents/labels/good%20first%20issue)
 
 ### For Advanced Users
 - Study the [Agent System Blueprint](features/agent-system-blueprint.md)
@@ -83,20 +83,20 @@ docs/
 → [Contributing Guide](contributing/CONTRIBUTING.md)
 
 **...report a bug or request a feature**
-→ [GitHub Issues](https://github.com/darrenhinde/OpenAgents/issues)
+→ [GitHub Issues](https://github.com/johnneerdael/OpenAgents/issues)
 
 ## 💡 Additional Resources
 
 - **Main README**: [../README.md](../README.md)
-- **GitHub Repository**: https://github.com/darrenhinde/OpenAgents
+- **GitHub Repository**: https://github.com/johnneerdael/OpenAgents
 - **OpenCode CLI Docs**: https://opencode.ai/docs
 - **Component Registry**: [../registry.json](../registry.json)
 
 ## 🤝 Community
 
-- **Issues**: [Report bugs or request features](https://github.com/darrenhinde/OpenAgents/issues)
-- **Discussions**: [Ask questions and share ideas](https://github.com/darrenhinde/OpenAgents/discussions)
-- **Pull Requests**: [Contribute code](https://github.com/darrenhinde/OpenAgents/pulls)
+- **Issues**: [Report bugs or request features](https://github.com/johnneerdael/OpenAgents/issues)
+- **Discussions**: [Ask questions and share ideas](https://github.com/johnneerdael/OpenAgents/discussions)
+- **Pull Requests**: [Contribute code](https://github.com/johnneerdael/OpenAgents/pulls)
 
 ## 📝 License
 
@@ -104,4 +104,4 @@ This project is licensed under the MIT License. See [LICENSE](../LICENSE) for de
 
 ---
 
-**Need help?** Check the [Contributing Guide](contributing/CONTRIBUTING.md) or open an [issue](https://github.com/darrenhinde/OpenAgents/issues).
+**Need help?** Check the [Contributing Guide](contributing/CONTRIBUTING.md) or open an [issue](https://github.com/johnneerdael/OpenAgents/issues).

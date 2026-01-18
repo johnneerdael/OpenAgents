@@ -4,12 +4,12 @@
 
 ### AI agent framework for plan-first development workflows with approval-based execution
 
-[![GitHub stars](https://img.shields.io/github/stars/darrenhinde/OpenAgents?style=social)](https://github.com/darrenhinde/OpenAgents/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/johnneerdael/OpenAgents?style=social)](https://github.com/johnneerdael/OpenAgents/stargazers)
 [![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/DarrenBuildsAI?style=social)](https://x.com/DarrenBuildsAI)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub last commit](https://img.shields.io/github/last-commit/darrenhinde/OpenAgents)](https://github.com/darrenhinde/OpenAgents/commits/main)
+[![GitHub last commit](https://img.shields.io/github/last-commit/johnneerdael/OpenAgents)](https://github.com/johnneerdael/OpenAgents/commits/main)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](docs/contributing/CONTRIBUTING.md)
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow.svg?style=flat&logo=buy-me-a-coffee)](https://buymeacoffee.com/darrenhinde)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow.svg?style=flat&logo=buy-me-a-coffee)](https://buymeacoffee.com/johnneerdael)
 
 **Multi-language support:** TypeScript • Python • Go • Rust  
 **Features:** Automatic testing • Code review • Validation
@@ -22,7 +22,7 @@
 
 > **Note:** This repository has evolved since the demo video with continuous improvements to make it easier for others to use in their projects. The core concepts remain the same, but installation and component organization have been streamlined.
 
-> 📹 **Following along with the video?** The simplified structure shown in the tutorial is available on the [`video-simple`](https://github.com/darrenhinde/OpenAgents/tree/video-simple) branch.
+> 📹 **Following along with the video?** The simplified structure shown in the tutorial is available on the [`video-simple`](https://github.com/johnneerdael/OpenAgents/tree/video-simple) branch.
 
 
 ## Why Use This?
@@ -52,7 +52,7 @@ https://opencode.ai/docs#
 
 ```bash
 # Download the installer
-curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh -o install.sh
+curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh -o install.sh
 
 # Run interactively
 bash install.sh
@@ -64,7 +64,7 @@ bash install.sh
 
 ```bash
 # Download the installer
-curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh -o install.sh
+curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh -o install.sh
 
 # Run interactively
 bash install.sh
@@ -76,7 +76,7 @@ bash install.sh
 
 ```powershell
 # Download the script
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh" -OutFile "install.sh"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh" -OutFile "install.sh"
 
 # Run with Git Bash
 & "C:\Program Files\Git\bin\bash.exe" install.sh
@@ -107,19 +107,19 @@ The installer offers:
 
 ```bash
 # Essential - Minimal essentials (9 components)
-curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh | bash -s essential
+curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh | bash -s essential
 
 # Developer - Recommended for daily work (19 components)
-curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh | bash -s developer
+curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh | bash -s developer
 
 # Business - Business automation and content creation (15 components)
-curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh | bash -s business
+curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh | bash -s business
 
 # Full - Everything included (25 components)
-curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh | bash -s full
+curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh | bash -s full
 
 # Advanced - Full + System Builder (32 components)
-curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh | bash -s advanced
+curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh | bash -s advanced
 ```
 </details>
 
@@ -128,7 +128,7 @@ curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install
 
 ```powershell
 # Download script
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh" -OutFile "install.sh"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh" -OutFile "install.sh"
 
 # Essential profile
 & "C:\Program Files\Git\bin\bash.exe" install.sh essential
@@ -152,7 +152,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/darrenhinde/OpenAgents
 **Option C: Manual Install**
 ```bash
 # Clone this repository
-git clone https://github.com/darrenhinde/OpenAgents.git
+git clone https://github.com/johnneerdael/OpenAgents.git
 cd OpenAgents
 
 # Install to OpenCode directory (global)
@@ -316,7 +316,7 @@ The System Builder is an interactive tool that generates complete `.opencode` ar
 ### Quick Start
 ```bash
 # Install advanced profile (includes system builder)
-curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh | bash -s advanced
+curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh | bash -s advanced
 
 # Run the interactive builder
 /build-context-system
@@ -431,7 +431,7 @@ mkdir -p ~/.opencode/agent/core
 
 # Download specific agent
 curl -o ~/.opencode/agent/core/opencoder.md \
-  https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/.opencode/agent/core/opencoder.md
+  https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/.opencode/agent/core/opencoder.md
 ```
 
 ---
@@ -494,7 +494,7 @@ Keep your components up to date:
 ./update.sh
 
 # Or re-run the installer
-curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh | bash
 ```
 
 ---
@@ -595,7 +595,7 @@ opencode --agent opencoder
 If this helped you out, I'd love to hear about it!
 
 - **Follow on X**: [@DarrenBuildsAI](https://x.com/DarrenBuildsAI) - I post updates on AI agents and OpenCode workflows.
-- **Support the Work**: [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-yellow?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/darrenhinde)
+- **Support the Work**: [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-yellow?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/johnneerdael)
 
 Totally optional, but appreciated.
 

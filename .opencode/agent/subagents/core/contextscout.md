@@ -6,7 +6,7 @@ description: "Discovers and recommends context files using glob, read, and grep 
 category: subagents/core
 type: subagent
 version: 4.0.0
-author: darrenhinde
+author: johnneerdael
 model: "opencode/grok-code"
 
 # Agent Configuration£

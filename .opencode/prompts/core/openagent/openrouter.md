@@ -34,7 +34,7 @@ recommended_models:
   - "meta-llama/llama-3.1-70b-instruct"  # OSS alternative
 tested_with: "anthropic/claude-3.5-sonnet"
 last_tested: "2025-12-10"
-maintainer: "darrenhinde"
+maintainer: "johnneerdael"
 status: "stable"
 ---
 

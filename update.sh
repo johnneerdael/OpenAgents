@@ -15,7 +15,7 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-REPO_URL="https://raw.githubusercontent.com/darrenhinde/OpenAgents/main"
+REPO_URL="https://raw.githubusercontent.com/johnneerdael/OpenAgents/main"
 INSTALL_DIR=".opencode"
 
 print_success() { echo -e "${GREEN}✓${NC} $1"; }

@@ -44,9 +44,9 @@ else
 fi
 
 # Configuration
-REPO_URL="https://github.com/darrenhinde/OpenAgents"
+REPO_URL="https://github.com/johnneerdael/OpenAgents"
 BRANCH="${OPENCODE_BRANCH:-main}"  # Allow override via environment variable
-RAW_URL="https://raw.githubusercontent.com/darrenhinde/OpenAgents/${BRANCH}"
+RAW_URL="https://raw.githubusercontent.com/johnneerdael/OpenAgents/${BRANCH}"
 
 # Registry URL - supports local fallback for development
 # Priority: 1) REGISTRY_URL env var, 2) Local registry.json, 3) Remote GitHub
@@ -477,7 +477,7 @@ check_interactive_mode() {
         echo "For interactive mode, download the script first:"
         echo ""
         echo -e "${CYAN}# Download the script${NC}"
-        echo "curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh -o install.sh"
+        echo "curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh -o install.sh"
         echo ""
         echo -e "${CYAN}# Run interactively${NC}"
         echo "bash install.sh"
@@ -485,7 +485,7 @@ check_interactive_mode() {
         echo "Or use a profile directly:"
         echo ""
         echo -e "${CYAN}# Quick install with profile${NC}"
-        echo "curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh | bash -s essential"
+        echo "curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh | bash -s essential"
         echo ""
         echo "Available profiles: essential, developer, business, full, advanced"
         echo ""
@@ -725,7 +725,7 @@ show_custom_menu() {
     echo "Use space to toggle, Enter to continue"
     echo ""
     
-    local categories=("agents" "subagents" "commands" "tools" "plugins" "skills" "contexts" "config")
+    local categories=("agents" "subagents" "commands" "tools" "plugins" "hooks" "skills" "contexts" "config")
     local selected_categories=()
     
     # Simple selection (for now, we'll make it interactive later)
@@ -870,6 +870,7 @@ show_installation_preview() {
     local commands=()
     local tools=()
     local plugins=()
+    local hooks=()
     local skills=()
     local contexts=()
     local configs=()
@@ -882,6 +883,7 @@ show_installation_preview() {
             command) commands+=("$comp") ;;
             tool) tools+=("$comp") ;;
             plugin) plugins+=("$comp") ;;
+            hook) hooks+=("$comp") ;;
             skill) skills+=("$comp") ;;
             context) contexts+=("$comp") ;;
             config) configs+=("$comp") ;;
@@ -893,6 +895,7 @@ show_installation_preview() {
     [ ${#commands[@]} -gt 0 ] && echo -e "${CYAN}Commands (${#commands[@]}):${NC} ${commands[*]##*:}"
     [ ${#tools[@]} -gt 0 ] && echo -e "${CYAN}Tools (${#tools[@]}):${NC} ${tools[*]##*:}"
     [ ${#plugins[@]} -gt 0 ] && echo -e "${CYAN}Plugins (${#plugins[@]}):${NC} ${plugins[*]##*:}"
+    [ ${#hooks[@]} -gt 0 ] && echo -e "${CYAN}Hooks (${#hooks[@]}):${NC} ${hooks[*]##*:}"
     [ ${#skills[@]} -gt 0 ] && echo -e "${CYAN}Skills (${#skills[@]}):${NC} ${skills[*]##*:}"
     [ ${#contexts[@]} -gt 0 ] && echo -e "${CYAN}Contexts (${#contexts[@]}):${NC} ${contexts[*]##*:}"
     [ ${#configs[@]} -gt 0 ] && echo -e "${CYAN}Config (${#configs[@]}):${NC} ${configs[*]##*:}"
@@ -934,6 +937,7 @@ show_collision_report() {
     local commands=()
     local tools=()
     local plugins=()
+    local hooks=()
     local skills=()
     local contexts=()
     local configs=()
@@ -952,6 +956,8 @@ show_collision_report() {
             tools+=("$file")
         elif [[ $file == *"/plugin/"* ]]; then
             plugins+=("$file")
+        elif [[ $file == *"/hook/"* ]]; then
+            hooks+=("$file")
         elif [[ $file == *"/skill/"* ]]; then
             skills+=("$file")
         elif [[ $file == *"/context/"* ]]; then
@@ -967,6 +973,7 @@ show_collision_report() {
     [ ${#commands[@]} -gt 0 ] && echo -e "${YELLOW}  Commands (${#commands[@]}):${NC}" && printf '    %s\n' "${commands[@]}"
     [ ${#tools[@]} -gt 0 ] && echo -e "${YELLOW}  Tools (${#tools[@]}):${NC}" && printf '    %s\n' "${tools[@]}"
     [ ${#plugins[@]} -gt 0 ] && echo -e "${YELLOW}  Plugins (${#plugins[@]}):${NC}" && printf '    %s\n' "${plugins[@]}"
+    [ ${#hooks[@]} -gt 0 ] && echo -e "${YELLOW}  Hooks (${#hooks[@]}):${NC}" && printf '    %s\n' "${hooks[@]}"
     [ ${#skills[@]} -gt 0 ] && echo -e "${YELLOW}  Skills (${#skills[@]}):${NC}" && printf '    %s\n' "${skills[@]}"
     [ ${#contexts[@]} -gt 0 ] && echo -e "${YELLOW}  Context (${#contexts[@]}):${NC}" && printf '    %s\n' "${contexts[@]}"
     [ ${#configs[@]} -gt 0 ] && echo -e "${YELLOW}  Config (${#configs[@]}):${NC}" && printf '    %s\n' "${configs[@]}"
@@ -1128,6 +1135,12 @@ perform_installation() {
         mkdir -p "$(dirname "$dest")"
         
         if curl -fsSL "$url" -o "$dest"; then
+            # Handle autonomy configuration if needed
+            if [[ "$path" == *".opencode/context/core/autonomy/autonomy-guidelines.md" ]]; then
+                print_info "Configuring autonomy system..."
+                # Extract and prepare default configuration from guidelines or schema
+            fi
+
             # Transform paths for global installation (any non-local path)
             # Local paths: .opencode or */.opencode
             if [[ "$INSTALL_DIR" != ".opencode" ]] && [[ "$INSTALL_DIR" != *"/.opencode" ]]; then
@@ -1369,7 +1382,7 @@ main() {
                 echo "  $0 developer"
                 echo ""
                 echo "  ${CYAN}# Install from URL (non-interactive)${NC}"
-                echo "  curl -fsSL https://raw.githubusercontent.com/darrenhinde/OpenAgents/main/install.sh | bash -s developer"
+                echo "  curl -fsSL https://raw.githubusercontent.com/johnneerdael/OpenAgents/main/install.sh | bash -s developer"
                 echo ""
                 echo -e "${BOLD}Platform Support:${NC}"
                 echo "  ✓ Linux (bash 3.2+)"

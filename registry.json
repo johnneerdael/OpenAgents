@@ -1,7 +1,7 @@
 {
   "version": "2.0.0",
   "schema_version": "2.0.0",
-  "repository": "https://github.com/darrenhinde/OpenAgents",
+  "repository": "https://github.com/johnneerdael/OpenAgents",
   "categories": {
     "essential": "Minimal components for basic functionality",
     "standard": "Standard components for typical use",
@@ -409,6 +409,36 @@
           "search",
           "retrieval",
           "subagent"
+        ],
+        "dependencies": [],
+        "category": "core"
+      },
+      {
+        "id": "task-classifier",
+        "name": "TaskClassifier",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/coordination/task-classifier.md",
+        "description": "Analyzes user requests and system tasks to determine their suitability for autonomous execution and background processing.",
+        "tags": [
+          "classification",
+          "autonomy",
+          "coordination"
+        ],
+        "dependencies": [
+          "context:autonomy-guidelines"
+        ],
+        "category": "core"
+      },
+      {
+        "id": "background-task-manager",
+        "name": "BackgroundTaskManager",
+        "type": "subagent",
+        "path": ".opencode/agent/subagents/coordination/background-task-manager.md",
+        "description": "Orchestrate and monitor background processes, providing updates and results to primary agents.",
+        "tags": [
+          "background-tasks",
+          "coordination",
+          "async"
         ],
         "dependencies": [],
         "category": "core"
@@ -2421,6 +2451,68 @@
         ],
         "dependencies": [],
         "category": "standard"
+      },
+      {
+        "id": "autonomy-config-schema",
+        "name": "Autonomy Config Schema",
+        "type": "context",
+        "path": ".opencode/context/core/autonomy/autonomy-config-schema.md",
+        "description": "Configuration for agent autonomy levels, approval gates, and background task behavior",
+        "tags": [
+          "autonomy",
+          "config",
+          "schema"
+        ],
+        "dependencies": [],
+        "category": "core"
+      },
+      {
+        "id": "autonomy-controller-hook-guide",
+        "name": "Autonomy Controller Hook Guide",
+        "type": "context",
+        "path": ".opencode/context/core/autonomy/autonomy-controller-hook.md",
+        "description": "Manages autonomy levels and approval gates based on task classification",
+        "tags": [
+          "autonomy",
+          "hook",
+          "controller"
+        ],
+        "dependencies": [],
+        "category": "core"
+      },
+      {
+        "id": "autonomy-guidelines",
+        "name": "Autonomy Guidelines",
+        "type": "context",
+        "path": ".opencode/context/core/autonomy/autonomy-guidelines.md",
+        "description": "Guidelines for determining autonomy levels and acting independently",
+        "tags": [
+          "autonomy",
+          "guidelines"
+        ],
+        "dependencies": [],
+        "category": "core"
+      }
+    ],
+    "hooks": [
+      {
+        "id": "autonomy-controller",
+        "name": "Autonomy Controller",
+        "type": "hook",
+        "path": ".opencode/hooks/autonomy-controller.ts",
+        "description": "Manages autonomy levels and approval gates for agents based on task classification.",
+        "tags": [
+          "autonomy",
+          "controller",
+          "hook"
+        ],
+        "dependencies": [
+          "context:autonomy-config-schema",
+          "context:autonomy-guidelines",
+          "subagent:task-classifier",
+          "subagent:background-task-manager"
+        ],
+        "category": "core"
       }
     ],
     "config": [
