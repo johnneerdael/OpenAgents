@@ -53,7 +53,6 @@ This fork enhances OpenAgents with advanced autonomy control features and intell
 - **Cost-Performance Tiers**: Choose from premium (Claude Opus 4.5), balanced (GPT-5.2), or budget (DeepSeek, Qwen) options
 
 ### Enhanced Tools
-- **Autonomy Control Tool**: Programmatic access to autonomy settings via `oh-my-opencode`
 - **Session State Manager**: Robust session management with comprehensive test coverage
 - **Background Task Integration**: Parallel task execution in permissive mode
 
