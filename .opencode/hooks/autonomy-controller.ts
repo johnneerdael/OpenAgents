@@ -29,10 +29,38 @@ export interface HookResult {
 import type { AutonomyConfig, AutonomyModeSettings, AutonomyLevel, AutonomyLevelSettings, TaskClassification, Task, ToolCall, AgentResult, ExecutionContext } from './types';
 
 /**
+ * NOTE: Session autonomy state is managed by oh-my-opencode/src/shared/session-autonomy-state.ts
+ * This hook imports those functions at runtime when the OpenCode extension is running.
+ * For standalone testing, we provide inline stubs.
+ */
+
+// Inline session autonomy state (for when hook runs standalone)
+const sessionAutonomyStore = new Map<string, 'permissive' | 'balanced' | 'restrictive'>();
+
+function getSessionAutonomyMode(sessionId: string): 'permissive' | 'balanced' | 'restrictive' | null {
+  // In production, this would import from oh-my-opencode shared module
+  // For now, use inline storage
+  return sessionAutonomyStore.get(sessionId) || null;
+}
+
+// Export for use by tools if needed
+export function setSessionAutonomyMode(sessionId: string, mode: 'permissive' | 'balanced' | 'restrictive'): void {
+  sessionAutonomyStore.set(sessionId, mode);
+}
+
+export function clearSessionAutonomyMode(sessionId: string): void {
+  sessionAutonomyStore.delete(sessionId);
+}
+
+export function hasSessionAutonomyOverride(sessionId: string): boolean {
+  return sessionAutonomyStore.has(sessionId);
+}
+
+/**
  * Create the autonomy controller hook
  */
 export function createAutonomyControllerHook(input: PluginInput) {
-  const config = loadAutonomyConfig(input.config);
+  const baseConfig = loadAutonomyConfig(input.config);
   
   return {
     name: 'autonomy-controller',
@@ -42,6 +70,17 @@ export function createAutonomyControllerHook(input: PluginInput) {
      * Classifies the task and determines autonomy level
      */
     onTaskSubmit: async (task: Task): Promise<HookResult> => {
+      // Get session ID from task context
+      const sessionId = task.session_id || 'default';
+      
+      // Check for session override first
+      const overrideMode = getSessionAutonomyMode(sessionId);
+      
+      // Apply session override if exists
+      const config = overrideMode
+        ? { ...baseConfig, modes: { ...baseConfig.modes, default: overrideMode } }
+        : baseConfig;
+      
       const classification = await classifyTask(task, config.classification);
       const autonomyLevel = determineAutonomyLevel(classification, config.classification.default_level);
       
@@ -49,6 +88,9 @@ export function createAutonomyControllerHook(input: PluginInput) {
         modified: true,
         data: {
           autonomy_level: autonomyLevel,
+          autonomy_mode: config.modes.default,
+          session_id: sessionId,
+          session_override: overrideMode,
           can_execute_immediately: canExecuteImmediately(autonomyLevel, config),
           requires_approval: requiresApproval(autonomyLevel, config),
           background_tasks: getBackgroundCandidates(task, autonomyLevel),
@@ -67,6 +109,13 @@ export function createAutonomyControllerHook(input: PluginInput) {
      */
     onToolUse: async (toolCall: ToolCall, context: ExecutionContext): Promise<HookResult> => {
       const autonomyLevel = context.autonomy_level || 'medium';
+      const sessionId = context.session_id || 'default';
+      
+      // Check for session override
+      const overrideMode = getSessionAutonomyMode(sessionId);
+      const config = overrideMode
+        ? { ...baseConfig, modes: { ...baseConfig.modes, default: overrideMode } }
+        : baseConfig;
       
       // Check if tool execution requires approval
       if (requiresApproval(autonomyLevel, config) && !context.approved) {
@@ -74,7 +123,7 @@ export function createAutonomyControllerHook(input: PluginInput) {
           modified: true,
           data: {
             blocked: true,
-            reason: `Tool '${toolCall.name}' requires approval at ${autonomyLevel} autonomy level`,
+            reason: `Tool '${toolCall.name}' requires approval at ${autonomyLevel} autonomy level (mode: ${config.modes.default})`,
             approval_type: 'explicit'
           }
         } as any;
@@ -90,15 +139,16 @@ export function createAutonomyControllerHook(input: PluginInput) {
      */
     onAgentComplete: async (result: AgentResult): Promise<void> => {
       // Report autonomy decisions
-      if (config.reporting.show_autonomy_level) {
+      if (baseConfig.reporting.show_autonomy_level) {
+        const mode = result.metadata?.autonomy_mode || baseConfig.modes.default;
         await input.ui.notify({
           type: 'info',
-          message: `Executed at ${result.metadata?.autonomy_level || 'medium'} autonomy level`
+          message: `Executed at ${result.metadata?.autonomy_level || 'medium'} autonomy level (mode: ${mode})`
         });
       }
       
       // Track metrics
-      await trackMetrics(result, config);
+      await trackMetrics(result, baseConfig);
     }
   };
 }

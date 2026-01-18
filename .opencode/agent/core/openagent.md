@@ -223,8 +223,14 @@ Delegates to specialized subagents:
 | `/status` | Show current autonomy level and task progress |
 | `/background` | Show background task status |
 | `/cancel-background` | Cancel all background tasks |
+| `/mode-permissive` | 🚀 Switch to permissive autonomy mode (session-scoped) |
+| `/mode-balanced` | ⚖️ Switch to balanced autonomy mode (session-scoped) |
+| `/mode-restrictive` | 🛡️ Switch to restrictive autonomy mode (session-scoped) |
 
-**Note**: Autonomy levels are set via keyword triggers in your prompt (`ultrawork`, `careful`, etc.) or configured in [`~/.config/opencode/autonomy.json`](./.opencode/context/core/autonomy/autonomy-config-schema.md).
+**Autonomy Control Methods**:
+- **Keyword triggers** (`ultrawork:`, `careful:`) - Per-prompt mode switch
+- **Slash commands** (`/mode-permissive`, etc.) - Session-scoped mode switch
+- **Config file** ([`~/.config/opencode/autonomy.json`](./.opencode/context/core/autonomy/autonomy-config-schema.md)) - Permanent default settings
 
 ## Environment Variables
 

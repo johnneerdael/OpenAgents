@@ -654,6 +654,48 @@
           "subagent:codebase-pattern-analyst"
         ],
         "category": "standard"
+      },
+      {
+        "id": "mode-permissive",
+        "name": "Mode Permissive",
+        "type": "command",
+        "path": ".opencode/command/autonomy/mode-permissive.md",
+        "description": "Switch to permissive autonomy mode (auto-approved execution)",
+        "tags": [
+          "autonomy",
+          "mode",
+          "permissive"
+        ],
+        "dependencies": [],
+        "category": "essential"
+      },
+      {
+        "id": "mode-balanced",
+        "name": "Mode Balanced",
+        "type": "command",
+        "path": ".opencode/command/autonomy/mode-balanced.md",
+        "description": "Switch to balanced autonomy mode (standard approval workflow)",
+        "tags": [
+          "autonomy",
+          "mode",
+          "balanced"
+        ],
+        "dependencies": [],
+        "category": "essential"
+      },
+      {
+        "id": "mode-restrictive",
+        "name": "Mode Restrictive",
+        "type": "command",
+        "path": ".opencode/command/autonomy/mode-restrictive.md",
+        "description": "Switch to restrictive autonomy mode (maximum oversight)",
+        "tags": [
+          "autonomy",
+          "mode",
+          "restrictive"
+        ],
+        "dependencies": [],
+        "category": "essential"
       }
     ],
     "tools": [

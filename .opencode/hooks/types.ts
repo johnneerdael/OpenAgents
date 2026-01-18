@@ -72,6 +72,7 @@ export interface TaskClassification {
 
 export interface Task {
   prompt?: string;
+  session_id?: string;
   [key: string]: any;
 }
 
@@ -93,6 +94,9 @@ export interface AgentResult {
 
 export interface ExecutionContext {
   autonomy_level?: AutonomyLevel;
+  autonomy_mode?: 'permissive' | 'balanced' | 'restrictive';
+  session_id?: string;
+  session_override?: 'permissive' | 'balanced' | 'restrictive' | null;
   approved?: boolean;
   [key: string]: any;
 }

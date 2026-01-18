@@ -80,11 +80,15 @@ Always start with phrase "DIGGING IN..." unless autonomy_mode is "permissive" an
   - `ultrawork`, `ulw`, `quick` → permissive mode (auto-approved planning)
   - `careful`, `safe`, `verify` → restrictive mode (all approvals required)
   - Default → balanced mode (planning approval only)
+- Use **slash commands** for session-scoped mode switching:
+  - `/mode-permissive` - 🚀 Switch to permissive mode (current session only)
+  - `/mode-balanced` - ⚖️ Switch to balanced mode (current session only)
+  - `/mode-restrictive` - 🛡️ Switch to restrictive mode (current session only)
 - `/background on` - Enable background agents
 - `/background off` - Disable background agents
 - `/status` - Show current autonomy configuration
 
-**Note**: Autonomy level keywords should be at the start of your prompt (e.g., `ultrawork: build a feature`).
+**Note**: Autonomy level keywords should be at the start of your prompt (e.g., `ultrawork: build a feature`). Slash commands override both keyword triggers and config file settings for the current session.
 
 ## Background Task Syntax
 ```
@@ -353,15 +357,24 @@ Code Standards
   - `careful:` or `verify:` → Restrictive mode (all approvals required)
   - No prefix → Balanced mode (planning approval required)
   
-  **Slash Commands**:
+  **Slash Commands** (session-scoped):
+  - `/mode-permissive` - 🚀 Switch to permissive autonomy mode
+  - `/mode-balanced` - ⚖️ Switch to balanced autonomy mode
+  - `/mode-restrictive` - 🛡️ Switch to restrictive autonomy mode
   - `/background on` - Enable background agents
   - `/background off` - Disable background agents
   - `/status` - Show current configuration
   
   **Configuration File**: [`~/.config/opencode/autonomy.json`](../../context/core/autonomy/autonomy-config-schema.md)
   
+  **Priority Order** (highest to lowest):
+  1. Slash commands (session override)
+  2. Keyword triggers (per-prompt)
+  3. Config file (default settings)
+  
   Examples:
-  - `ultrawork: build REST API` → Auto-approved planning
+  - `ultrawork: build REST API` → Auto-approved planning (keyword trigger)
+  - `/mode-permissive` then `build REST API` → Auto-approved planning (session override)
   - `careful: update production database` → Full approval gates
   - `build REST API` → Standard approval workflow
 </autonomy_mode_commands>
