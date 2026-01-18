@@ -1036,6 +1036,40 @@ perform_installation() {
             fi
         fi
     done
+
+    # Prompt for models if in interactive mode
+    local component_models=()
+    if [ "$NON_INTERACTIVE" != true ]; then
+        echo -e "${BOLD}Model Selection (Optional)${NC}"
+        echo "You can specify a preferred model for each agent/subagent."
+        echo "Example: openai/gpt-4o, anthropic/claude-3-5-sonnet, etc."
+        echo "Leave blank to use the default model."
+        echo ""
+        
+        for comp in "${SELECTED_COMPONENTS[@]}"; do
+            local type="${comp%%:*}"
+            local id="${comp##*:}"
+            
+            if [[ "$type" == "agent" ]] || [[ "$type" == "subagent" ]]; then
+                local registry_key
+                registry_key=$(get_registry_key "$type")
+                
+                local name desc
+                name=$(jq_exec ".components.${registry_key}[]? | select(.id == \"${id}\") | .name" "$TEMP_DIR/registry.json")
+                desc=$(jq_exec ".components.${registry_key}[]? | select(.id == \"${id}\") | .description" "$TEMP_DIR/registry.json")
+                
+                echo -e "${CYAN}${BOLD}${name}${NC} (${id})"
+                echo -e "   Role: ${desc}"
+                read -p "   Specify model for this agent: " selected_model
+                
+                if [ -n "$selected_model" ]; then
+                    component_models+=("${comp}|${selected_model}")
+                    echo -e "   ${GREEN}Using model: ${selected_model}${NC}"
+                fi
+                echo ""
+            fi
+        done
+    fi
     
     # Determine installation strategy
     local install_strategy="fresh"
@@ -1135,6 +1169,33 @@ perform_installation() {
         mkdir -p "$(dirname "$dest")"
         
         if curl -fsSL "$url" -o "$dest"; then
+            # Handle model selection if specified
+            if [[ "$type" == "agent" ]] || [[ "$type" == "subagent" ]]; then
+                local model_found=""
+                for mod in "${component_models[@]}"; do
+                    if [[ "$mod" == "${comp}|"* ]]; then
+                        model_found="${mod#*|}"
+                        break
+                    fi
+                done
+                
+                if [ -n "$model_found" ]; then
+                    # We need to insert the model: field into the YAML frontmatter
+                    # YAML frontmatter ends at the first --- after the opening one
+                    if grep -q "^model:" "$dest"; then
+                        # If model already exists
+                        sed -i.bak "s|^model:.*|model: ${model_found}|" "$dest" 2>/dev/null || true
+                    else
+                        # Insert before the closing '---' of the frontmatter
+                        # We use a pattern to match the second '---' and insert before it
+                        sed -i.bak "0,/---/! { /---/ i\\
+model: ${model_found}
+                        }" "$dest" 2>/dev/null || true
+                    fi
+                    rm -f "${dest}.bak" 2>/dev/null || true
+                fi
+            fi
+
             # Handle autonomy configuration if needed
             if [[ "$path" == *".opencode/context/core/autonomy/autonomy-guidelines.md" ]]; then
                 print_info "Configuring autonomy system..."
