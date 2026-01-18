@@ -16,11 +16,11 @@ The overall behavior of the agent is governed by three primary modes configured 
 
 ### 2. Task Classification
 
-Every request is automatically analyzed by the **Task Classifier** to determine its risk level:
+Every request is automatically analyzed by the **Task Classifier** to determine its autonomy level:
 
-* **HIGH (Exploratory)**: Reading code, searching logs, or documentation research.
-* **MEDIUM (Implementation)**: Writing new components, adding tests, or minor refactoring.
-* **LOW (Architectural/Risky)**: Changing APIs, deleting directories, or infrastructure changes.
+* **HIGH Autonomy (Exploratory)**: Reading code, searching logs, or documentation research.
+* **MEDIUM Autonomy (Implementation)**: Writing new components, adding tests, or minor refactoring.
+* **LOW Autonomy (Architectural/Risky)**: Changing APIs, deleting directories, or infrastructure changes.
 
 ## Approval Gates
 
