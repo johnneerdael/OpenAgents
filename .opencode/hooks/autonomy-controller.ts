@@ -170,14 +170,14 @@ export async function classifyTask(
   let confidence = 0;
   let reasoning = '';
   
-  if (lowMatches.length > 0) {
-    level = 'low';
-    confidence = Math.min(0.5 + (lowMatches.length * 0.15), 0.95);
-    reasoning = `Matched low-autonomy keywords: ${lowMatches.join(', ')}`;
-  } else if (highMatches.length > 0) {
+  if (highMatches.length > 0) {
     level = 'high';
     confidence = Math.min(0.5 + (highMatches.length * 0.15), 0.95);
     reasoning = `Matched high-autonomy keywords: ${highMatches.join(', ')}`;
+  } else if (lowMatches.length > 0) {
+    level = 'low';
+    confidence = Math.min(0.5 + (lowMatches.length * 0.15), 0.95);
+    reasoning = `Matched low-autonomy keywords: ${lowMatches.join(', ')}`;
   } else if (mediumMatches.length > 0) {
     level = 'medium';
     confidence = Math.min(0.5 + (mediumMatches.length * 0.15), 0.9);
