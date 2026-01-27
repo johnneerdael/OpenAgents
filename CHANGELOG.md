@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.5.5] - 2026-01-27
+
+### Changes
+- fix(registry): add component-planning context and remove repo-specific contexts from user profiles (#125)
+
 ## [0.5.4] - 2026-01-25
 
 ### Changes
@@ -242,3 +247,4 @@ v0.X.Y
 - **0.4.0** - Category-based agent organization system
 - **0.3.1** - CI improvements
 - **0.0.2** - Execution balance evaluator
+
