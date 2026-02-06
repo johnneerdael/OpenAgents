@@ -4,8 +4,6 @@ description: Executes coding subtasks in sequence, ensuring completion as specif
 mode: subagent
 temperature: 0
 permission:
-  bash:
-    "*": "deny"
   edit:
     "**/*.env*": "deny"
     "**/*.key": "deny"
@@ -13,9 +11,9 @@ permission:
     "node_modules/**": "deny"
     ".git/**": "deny"
   task:
-    "*": "deny"
     contextscout: "allow"
     externalscout: "allow"
+    TestEngineer: "allow"
 ---
 
 # CoderAgent
@@ -188,13 +186,52 @@ Self-Review: ✅ Types clean | ✅ Imports verified | ✅ No debug artifacts | �
 
 If ANY check fails → fix the issue. Do not signal completion until all checks pass.
 
-### Step 8: Signal Completion
+### Step 8: Mark Complete and Signal
 
-Report to orchestrator that task is ready for TaskManager verification:
-- Do NOT mark as `completed` yourself (TaskManager does this)
-- Include your Self-Review Report
-- Include completion summary (max 200 chars)
-- List deliverables created
+Update subtask status and report completion to orchestrator:
+
+**8.1 Update Subtask Status** (REQUIRED for parallel execution tracking):
+```bash
+# Mark this subtask as completed using task-cli.ts
+bash .opencode/skill/task-management/router.sh complete {feature} {seq} "{completion_summary}"
+```
+
+Example:
+```bash
+bash .opencode/skill/task-management/router.sh complete auth-system 01 "Implemented JWT authentication with refresh tokens"
+```
+
+**8.2 Verify Status Update**:
+```bash
+bash .opencode/skill/task-management/router.sh status {feature}
+```
+Confirm your subtask now shows: `status: "completed"`
+
+**8.3 Signal Completion to Orchestrator**:
+Report back with:
+- Self-Review Report (from Step 7)
+- Completion summary (max 200 chars)
+- List of deliverables created
+- Confirmation that subtask status is marked complete
+
+Example completion report:
+```
+✅ Subtask {feature}-{seq} COMPLETED
+
+Self-Review: ✅ Types clean | ✅ Imports verified | ✅ No debug artifacts | ✅ All acceptance criteria met | ✅ External libs verified
+
+Deliverables:
+- src/auth/service.ts
+- src/auth/middleware.ts
+- src/auth/types.ts
+
+Summary: Implemented JWT authentication with refresh tokens and error handling
+```
+
+**Why this matters for parallel execution**:
+- Orchestrator monitors subtask status to detect when entire parallel batch is complete
+- Without status update, orchestrator cannot proceed to next batch
+- Status marking is the signal that enables parallel workflow progression
 
 ---
 # OpenCode Agent Configuration
